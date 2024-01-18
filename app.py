@@ -3,11 +3,10 @@ import threading
 from flask import Flask, render_template, request, jsonify
 import pyaudio
 import wave
-import whisper
+import speech_recognition as sr
+from textblob import TextBlob  # Добавлен импорт
 
 app = Flask(__name__)
-
-# Параметры аудиозаписи
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
@@ -74,26 +73,42 @@ def stop_recording():
 
 def transcribe_audio(audio_file_path):
     try:
-        model = whisper.load_model("base")
-        result = model.transcribe(audio_file_path)
-        return result['text']
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(audio_file_path) as source:
+            audio = recognizer.record(source)
+        transcription = recognizer.recognize_google(audio)
+
+        # Анализ тональности с использованием TextBlob
+        blob = TextBlob(transcription)
+        sentiment_score = blob.sentiment.polarity
+
+        # Определение тональности
+        if sentiment_score > 0:
+            sentiment = "Positive"
+        elif sentiment_score < 0:
+            sentiment = "Negative"
+        else:
+            sentiment = "Neutral"
+
+        return transcription, sentiment
+
     except Exception as e:
-        return f"An error occurred: {str(e)}"
+        return f"An error occurred: {str(e)}", None
 
 
 @app.route('/transcription')
 def transcription_page():
-    files = os.listdir('uploads')
+    files = os.listdir('pipa')
     return render_template('transcription.html', files=files)
 
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
     audio_file = request.form.get('audio_file')
-    audio_file_path = os.path.join('uploads', audio_file)
-    transcription = transcribe_audio(audio_file_path)
-    files = os.listdir('uploads')
-    return render_template('transcription.html', transcription=transcription, files=files)
+    audio_file_path = os.path.join('pipa', audio_file)
+    transcription, sentiment = transcribe_audio(audio_file_path)
+    files = os.listdir('pipa')
+    return render_template('transcription.html', transcription=transcription, sentiment=sentiment, files=files)
 
 
 if __name__ == '__main__':
