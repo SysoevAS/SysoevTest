@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница транскрибации</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f8f8f8;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        label, select, button {
+            font-size: 16px;
+            margin: 5px;
+            display: block;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        p.transcription, p.sentiment {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Страница транскрибации</h1>
+
+    <p><a href="/">Перейти на главную страницу</a></p>
+
+    <form action="/transcribe" method="post">
+        <label for="audioFile">Выберите аудиофайл:</label>
+        <select name="audio_file" id="audioFile">
+            {% for file in files %}
+                <option value="{{ file }}">{{ file }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Транскрибировать</button>
+    </form>
+
+    {% if transcription or sentiment %}
+        <h2>Транскрипция:</h2>
+        <p class="transcription">{{ transcription }}</p>
+        <h2>Тональность:</h2>
+        <p class="sentiment">{{ sentiment }}</p>
+    {% endif %}
+</body>
+</html>

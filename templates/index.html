@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приложение распознавания речи</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f8f8f8;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: #2574a9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Приложение распознавания речи</h1>
+
+    <div style="text-align: center;">
+        <button id="startRecording">Начать запись</button>
+        <button id="stopRecording">Остановить запись</button>
+    </div>
+
+    <p><a href="/transcription">Перейти на страницу транскрибации</a></p>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#startRecording").click(function() {
+                $.post("/start_recording", function(data) {
+                    alert(data.message);
+                });
+            });
+
+            $("#stopRecording").click(function() {
+                $.post("/stop_recording", function(data) {
+                    alert(data.message);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
