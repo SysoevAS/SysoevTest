@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audio Recording</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <a href="/transcription">Go to Transcription Page</a>
+    <h1>Audio Recorder</h1>
+    <button id="startRecord">Start Recording</button>
+    <button id="stopRecord" disabled>Stop Recording</button>
+
+    <script>
+        document.getElementById('startRecord').onclick = function() {
+            this.disabled = true;
+            document.getElementById('stopRecord').disabled = false;
+            fetch('/start_recording', { method: 'POST' });
+        };
+
+        document.getElementById('stopRecord').onclick = function() {
+            this.disabled = true;
+            document.getElementById('startRecord').disabled = false;
+            fetch('/stop_recording', { method: 'POST' });
+        };
+    </script>
+</body>
+</html>
